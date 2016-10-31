@@ -4,7 +4,6 @@ app.controller('MainCtrl', [
   //inject service posts to controller
   'posts',
   function($scope, posts){
-    $scope.test = 'Hello world!';
     //Display data with ng-repeat //INJECT service posts to call the array posts
     $scope.posts = posts.posts;
     
@@ -21,21 +20,17 @@ app.controller('MainCtrl', [
     // };
     //function for upvoting
     $scope.incrementUpvotes = function(post) {
-      post.upvotes += 1;
+      posts.upvote(post);
     };
     //Submit a form with ng-show to apply link to the title
     $scope.addPost = function(){
       if(!$scope.title || $scope.title === '') { return; }
-      $scope.posts.push({
+      posts.create({
         title: $scope.title,
         link: $scope.link,
-        upvotes: 0,
-        comments: [
-          {author: 'Joe', body: 'Cool post!', upvotes: 0},
-          {author: 'Bob', body: 'Great idea but everything is wrong!', upvotes: 0}
-        ]
       });
       $scope.title = '';
       $scope.link = '';
     };
+    
 }])
