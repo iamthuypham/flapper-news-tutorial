@@ -11,13 +11,25 @@ function($stateProvider, $urlRouterProvider) {
     .state('home', {
       url: '/home',
       templateUrl: 'home/_home.html',
-      controller: 'MainCtrl'
+      controller: 'MainCtrl',
+      //Use resolve property to ensure posts are loaded everytime enter home page
+      resolve: {
+        postPromise: ['posts', function(posts){
+          return posts.getAll();
+        }]
+      }
     })
     //Setup post route
     .state('posts', {
-      url: '/posts/{id}',
+      url: '/posts/:id',
       templateUrl: 'posts/_posts.html',
-      controller: 'PostsCtrl'
+      controller: 'PostsCtrl',
+      //Use resolve for post
+      resolve: {
+        postData: ['$stateParams', 'posts', function($stateParams, posts) {
+          return posts.get($stateParams.id);
+        }]
+      }
     });
   //redirect to home if unspecified routes
   $urlRouterProvider.otherwise('home');
