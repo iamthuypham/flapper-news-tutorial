@@ -1,5 +1,4 @@
-app.module('flapperNews')
-.controller('AuthCtrl', [
+app.controller('AuthCtrl', [
 '$scope',
 '$state',
 'Auth',
