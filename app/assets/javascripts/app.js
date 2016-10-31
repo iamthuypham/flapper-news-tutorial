@@ -1,6 +1,6 @@
 /*global angular*/
 //Create new module with routing for dynamic client side web app
-var app = angular.module('flapperNews', ['ui.router','templates']);
+var app = angular.module('flapperNews', ['ui.router','templates','Devise']);
 //configure HOME state
 app.config([
 '$stateProvider',
@@ -11,13 +11,41 @@ function($stateProvider, $urlRouterProvider) {
     .state('home', {
       url: '/home',
       templateUrl: 'home/_home.html',
-      controller: 'MainCtrl'
+      controller: 'MainCtrl',
+      //Use resolve property to ensure posts are loaded everytime enter home page
+      resolve: {
+        postPromise: ['posts', function(posts){
+          return posts.getAll();
+        }]
+      }
     })
     //Setup post route
     .state('posts', {
-      url: '/posts/{id}',
+      url: '/posts/:id',
       templateUrl: 'posts/_posts.html',
-      controller: 'PostsCtrl'
+      controller: 'PostsCtrl',
+      //Use resolve for post
+      resolve: {
+        postData: ['$stateParams', 'posts', function($stateParams, posts) {
+          return posts.get($stateParams.id);
+        }]
+      }
+    })
+    //Login and Register
+    .state('login', {
+      url: '/login',
+      templateUrl: 'auth/_login.html',
+      controller: 'AuthCtrl'
+    })
+    .state('register', {
+      url: '/register',
+      templateUrl: 'auth/_register.html',
+      controller: 'AuthCtrl',
+      onEnter: ['$state', 'Auth', function($state, Auth) {
+        Auth.currentUser().then(function (){
+          $state.go('home');
+        })
+      }]
     });
   //redirect to home if unspecified routes
   $urlRouterProvider.otherwise('home');
