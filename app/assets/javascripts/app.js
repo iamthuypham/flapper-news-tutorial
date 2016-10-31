@@ -1,6 +1,6 @@
 /*global angular*/
 //Create new module with routing for dynamic client side web app
-var app = angular.module('flapperNews', ['ui.router','templates']);
+var app = angular.module('flapperNews', ['ui.router','templates','Devise']);
 //configure HOME state
 app.config([
 '$stateProvider',
